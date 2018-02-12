@@ -1,0 +1,8 @@
+﻿<designData:TestData xmlns:designData="clr-namespace:SntValentineScreensaver.DesignData"
+                     xmlns:drawing="clr-namespace:System.Drawing;assembly=System.Drawing">
+    <drawing:Image />
+    <drawing:Image />
+    <drawing:Image />
+    <drawing:Image />
+
+</designData:TestData>
