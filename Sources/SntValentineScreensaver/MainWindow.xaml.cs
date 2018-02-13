@@ -41,7 +41,6 @@ namespace SntValentineScreensaver
 
         public List<List<HeartCell>> ImagesArray { get; set; } = new List<List<HeartCell>>();
 
-        public string BGColor { get; set; } = "#a23a61";
         public BitmapImage OpacityMaskImage { get; set; }
         public ImageBrush OpacityBrush { get; set; }
 
@@ -242,7 +241,7 @@ namespace SntValentineScreensaver
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            Application.Current.Shutdown();
+            //Application.Current.Shutdown();
         }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)

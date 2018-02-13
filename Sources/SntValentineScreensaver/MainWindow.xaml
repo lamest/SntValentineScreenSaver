@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SntValentineScreensaver"
         mc:Ignorable="d"
         Title="MainWindow"
-        Background="{Binding BGColor}"
+        Background="#a23a61"
         KeyDown="Window_KeyDown"
         MouseDown="Window_MouseDown"
         ResizeMode="NoResize"
@@ -68,7 +68,7 @@
             </Grid.Effect>
 
         </Grid>
-        <Label x:Name="SignLabel" Opacity="0"  Content="...твой тайный поклонник." VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1">
+        <Label x:Name="SignLabel" Opacity="0"  Content="...твой тайный поклонник." VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1" FontSize="20">
             <Label.Effect>
                 <BlurEffect Radius="10" x:Name="LabelBlurEffect"/>
             </Label.Effect>

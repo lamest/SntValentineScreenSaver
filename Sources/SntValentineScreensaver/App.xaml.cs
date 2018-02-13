@@ -27,20 +27,20 @@ namespace SntValentineScreensaver
             {
                 foreach (var s in Screen.AllScreens)
                 {
+                    Window window = null;
                     if (Equals(s, Screen.PrimaryScreen))
                     {
-                        var window = new MainWindow
-                        {
-                            Left = s.WorkingArea.Left,
-                            Top = s.WorkingArea.Top,
-                            Width = s.WorkingArea.Width,
-                            Height = s.WorkingArea.Height
-                        };
-                        window.Show();
+                        window = new MainWindow();
                     }
                     else
                     {
+                        window = new EmptyWindow();
                     }
+                    window.Left = s.WorkingArea.Left;
+                    window.Top = s.WorkingArea.Top;
+                    window.Width = s.WorkingArea.Width;
+                    window.Height = s.WorkingArea.Height;
+                    window.Show();
                 }
             }
             else if (e.Args[0].ToLower().StartsWith("/p"))
