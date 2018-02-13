@@ -155,7 +155,7 @@ namespace SntValentineScreensaver
             switch (_currentState)
             {
                 case 0:
-                    pictureName = "empty";
+                    pictureName = "rose_PNG644";
                     break;
                 case 1:
                     pictureName = "rose_PNG638";
@@ -171,9 +171,6 @@ namespace SntValentineScreensaver
                     break;
                 case 5:
                     pictureName = "rose_PNG642";
-                    break;
-                case 6:
-                    pictureName = "rose_PNG644";
                     _currentState = 0;
                     break;
                 default:
@@ -190,23 +187,23 @@ namespace SntValentineScreensaver
             var flipOutAnimation = FlipOutAnimation();
             var flipInAnimation = FlipInAnimation();
 
-
+            int i = 0;
+            float totalDuration = 3000;
+            var baseDelay = totalDuration / 2;
             foreach (var row in ImagesArray)
             {
+                int j = 0;
+                var rowDelay = baseDelay - (baseDelay * ((float) i / ImagesArray.Count));
                 foreach (var heartCell in row)
                 {
+                    var cellDelay = (baseDelay * ((float) j / row.Count)) + rowDelay;
+                    var beginTime = TimeSpan.FromMilliseconds(cellDelay);
                     var img = (Image)heartCell.ViewPort.Visual;
 
                     var flipOutStoryboard = new Storyboard();
+                    flipOutStoryboard.BeginTime = beginTime;
                     Storyboard.SetTarget(flipOutAnimation, heartCell.ViewPort);
                     Storyboard.SetTargetProperty(flipOutAnimation, new PropertyPath("(Viewport2DVisual3D.Transform).(RotateTransform3D.Rotation)"));
-
-                    //var keyFramesAnimation = new ObjectAnimationUsingKeyFrames();
-                    //var firstFrame = new DiscreteObjectKeyFrame() {KeyTime = KeyTime.FromTimeSpan(TimeSpan.Zero), Value = pic};
-                    //keyFramesAnimation.BeginTime = TimeSpan.FromSeconds(1);
-                    //keyFramesAnimation.KeyFrames.Add(firstFrame);
-                    //Storyboard.SetTarget(keyFramesAnimation, img);
-                    //Storyboard.SetTargetProperty(keyFramesAnimation, new PropertyPath("Source"));
 
                     flipOutStoryboard.Children.Add(flipOutAnimation);
                     flipOutStoryboard.Completed += (s, e) =>
@@ -219,10 +216,9 @@ namespace SntValentineScreensaver
                         img.BeginStoryboard(flipInStoryboard);
                     };
                     img.BeginStoryboard(flipOutStoryboard);
-
-                    //heartCell.Transform.BeginAnimation();
-                    //heartCell.Image.BeginAnimation(flipInAnimation);
+                    j++;
                 }
+                i++;
             }
 
         }
