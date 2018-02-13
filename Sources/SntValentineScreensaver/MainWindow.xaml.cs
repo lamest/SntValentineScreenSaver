@@ -31,7 +31,7 @@ namespace SntValentineScreensaver
     public partial class MainWindow : Window
     {
         private Timer _animationGlobalTimer;
-        private ImageName _currentState = ImageName.Start;
+        private byte _currentState = 0;
 
         public MainWindow()
         {
@@ -137,7 +137,7 @@ namespace SntValentineScreensaver
         private static PerspectiveCamera CreateCamera()
         {
             var camera = new PerspectiveCamera();
-            camera.Position = new Point3D(0, 0, 4);
+            camera.Position = new Point3D(0, 0, 3);
             return camera;
         }
 
@@ -151,28 +151,35 @@ namespace SntValentineScreensaver
 
         private void OnGlobalTimerTick(object sender, EventArgs e)
         {
-            string pictureName=String.Empty;
+            var pictureName= string.Empty;
             switch (_currentState)
             {
-                case ImageName.Start:
-                    pictureName = "red_heart";
-                    _currentState = ImageName.First;
+                case 0:
+                    pictureName = "empty";
                     break;
-                case ImageName.First:
+                case 1:
+                    pictureName = "rose_PNG638";
+                    break;
+                case 2:
+                    pictureName = "rose_PNG650";
+                    break;
+                case 3:
+                    pictureName = "rose_PNG641";
+                    break;
+                case 4:
                     pictureName = "couple";
-                    //_currentState = ImageName.Second;
                     break;
-                case ImageName.Second:
-                    pictureName = "HeartOpacityMask";
-                    _currentState = ImageName.Third;
+                case 5:
+                    pictureName = "rose_PNG642";
                     break;
-                case ImageName.Third:
-                    pictureName = "HeartOpacityMask";
-                    _currentState = ImageName.Start;
+                case 6:
+                    pictureName = "rose_PNG644";
+                    _currentState = 0;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+            _currentState++;
             var pic = new BitmapImage(new Uri($"pack://application:,,,/SntValentineScreensaver;component/Images/{pictureName}.png", UriKind.Absolute));
 
             ChangePicture(pic);
@@ -283,13 +290,5 @@ namespace SntValentineScreensaver
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-    }
-
-    internal enum ImageName
-    {
-        Start,
-        First,
-        Second,
-        Third
     }
 }

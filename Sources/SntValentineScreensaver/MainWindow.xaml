@@ -66,6 +66,28 @@
             <Grid.Effect>
                 <DropShadowEffect BlurRadius="15"/>
             </Grid.Effect>
+
         </Grid>
+        <Label x:Name="SignLabel" Opacity="0"  Content="от тайного поклонника ;-)" VerticalAlignment="Bottom" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="1">
+            <Label.Effect>
+                <BlurEffect Radius="10" x:Name="LabelBlurEffect"/>
+            </Label.Effect>
+            <Label.Triggers>
+                <EventTrigger RoutedEvent="Label.Loaded">
+                    <BeginStoryboard>
+                        <Storyboard BeginTime="00:00:05">
+                            <DoubleAnimation From="10" To="0" Duration="00:00:02" 
+                                             Storyboard.TargetName="LabelBlurEffect" 
+                                             Storyboard.TargetProperty="Radius"
+                                             FillBehavior="HoldEnd"/>
+                            <DoubleAnimation From="0" To="1" Duration="00:00:02"
+                                             Storyboard.TargetName="SignLabel"
+                                             Storyboard.TargetProperty="Opacity"
+                                             FillBehavior="HoldEnd"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Label.Triggers>
+        </Label>
     </Grid>
 </Window>
