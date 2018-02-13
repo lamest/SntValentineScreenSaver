@@ -69,7 +69,8 @@ namespace SntValentineScreensaver
 
                     var light = CreateLight();
                     vp3d.Children.Add(light);
-                    var vp2d3d = CreateViewPort();
+                    var transform= new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 1, 0), 0));
+                    var vp2d3d = CreateViewPort(transform);
                     vp3d.Children.Add(vp2d3d);
 
                     vp3d.SetValue(Grid.ColumnProperty, i);
@@ -77,14 +78,14 @@ namespace SntValentineScreensaver
 
                     TheGrid.Children.Add(vp3d);
 
-                    var cell = new HeartCell() {ViewPort = vp2d3d,};
+                    var cell = new HeartCell() {ViewPort = vp2d3d, Transform= transform };
                     ImagesArray[i].Add(cell);
                 }
             }
 
             _animationGlobalTimer = new Timer();
 
-            _animationGlobalTimer.Interval = 2000;
+            _animationGlobalTimer.Interval = 5000;
             _animationGlobalTimer.Enabled = true;
             _animationGlobalTimer.Start();
             _animationGlobalTimer.Tick += OnGlobalTimerTick;
@@ -100,7 +101,7 @@ namespace SntValentineScreensaver
             //tt.BeginAnimation(TranslateTransform.XProperty, animation);
         }
 
-        private Viewport2DVisual3D CreateViewPort()
+        private Viewport2DVisual3D CreateViewPort(Transform3D transform)
         {
             var vp = new Viewport2DVisual3D();
             var geometry = new MeshGeometry3D();
@@ -122,13 +123,13 @@ namespace SntValentineScreensaver
             vp.Geometry = geometry;
 
             var material = new DiffuseMaterial(new SolidColorBrush(Color.FromArgb(0xff, 0xff, 0xff, 0xff)));
-            //material.SetValue(Viewport2DVisual3D.IsVisualHostMaterial, true);
+            Viewport2DVisual3D.SetIsVisualHostMaterial(material, true);
             vp.Material = material;
 
-            vp.Transform = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 1, 0), 0));
+            vp.Transform = transform;
 
             var image = new Image {Source = OpacityMaskImage};
-            vp.Visual = new Button { Content = "Testing", Background = Brushes.Aqua };
+            vp.Visual = image;//new Button { Content = "Testing", Background = Brushes.Aqua };
 
             return vp;
         }
@@ -155,7 +156,7 @@ namespace SntValentineScreensaver
             {
                 case ImageName.Start:
                     pictureName = "HeartOpacityMask";
-                    _currentState = ImageName.First;
+                    //_currentState = ImageName.First;
                     break;
                 case ImageName.First:
                     pictureName = "HeartOpacityMask";
@@ -181,14 +182,29 @@ namespace SntValentineScreensaver
         {
             var flipOutAnimation = FlipOutAnimation();
             var flipInAnimation = FlipInAnimation();
-            flipOutAnimation.Completed += (s, e) =>
-            {
-            };
+
 
             foreach (var row in ImagesArray)
             {
                 foreach (var heartCell in row)
                 {
+                    var flipOutStoryboard = new Storyboard();
+                    {
+                    };
+                    Storyboard.SetTarget(flipOutAnimation, heartCell.ViewPort);
+                    Storyboard.SetTarget(flipInAnimation, heartCell.ViewPort);
+                    Storyboard.SetTargetProperty(flipOutAnimation, new PropertyPath("(Viewport2DVisual3D.Transform).(RotateTransform3D.Rotation)"));
+                    Storyboard.SetTargetProperty(flipInAnimation, new PropertyPath("(Viewport2DVisual3D.Transform).(RotateTransform3D.Rotation)"));
+                    flipOutStoryboard.Children.Add(flipOutAnimation);
+                    flipOutStoryboard.Children.Add(flipInAnimation);
+                    var img=(Image)heartCell.ViewPort.Visual;
+                    flipOutAnimation.Completed += (s, e) =>
+                    {
+                        //img.Source = pic;
+                    };
+                    img.BeginStoryboard(flipOutStoryboard);
+
+                    //heartCell.Transform.BeginAnimation();
                     //heartCell.Image.BeginAnimation(flipInAnimation);
                 }
             }
@@ -197,17 +213,18 @@ namespace SntValentineScreensaver
 
         private Rotation3DAnimation FlipInAnimation()
         {
-            Rotation3D fromValue = new AxisAngleRotation3D(new Vector3D(1, 1, 0), 90);
-            Rotation3D toValue = new AxisAngleRotation3D(new Vector3D(1, 1, 0), 0);
-            var t = new Rotation3DAnimation(fromValue, toValue, new Duration(TimeSpan.FromSeconds(1)));
+            Rotation3D fromValue = new AxisAngleRotation3D(new Vector3D(0, 1, 0), 90);
+            Rotation3D toValue = new AxisAngleRotation3D(new Vector3D(0, 1, 0), 0);
+            var t = new Rotation3DAnimation(null, toValue, new Duration(TimeSpan.FromSeconds(1)), FillBehavior.HoldEnd);
             return t;
         }
 
         private Rotation3DAnimation FlipOutAnimation()
         {
-            Rotation3D fromValue = new AxisAngleRotation3D(new Vector3D(1, 1, 0), 0);
-            Rotation3D toValue = new AxisAngleRotation3D(new Vector3D(1, 1, 0), 90);
-            var t = new Rotation3DAnimation(fromValue, toValue, new Duration(TimeSpan.FromSeconds(1)));
+            Rotation3D fromValue = new AxisAngleRotation3D(new Vector3D(0, 1, 0), 0);
+            Rotation3D toValue = new AxisAngleRotation3D(new Vector3D(0, 1, 0), 90);
+            var t = new Rotation3DAnimation(null, toValue, new Duration(TimeSpan.FromSeconds(1)), FillBehavior.HoldEnd);
+            //t.BeginTime = TimeSpan.FromSeconds(1);
             return t;
         }
 
@@ -249,6 +266,7 @@ namespace SntValentineScreensaver
 
         public int AnimationDelay { get; set; }
         public Viewport2DVisual3D ViewPort { get; set; }
+        public RotateTransform3D Transform { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
