@@ -155,12 +155,12 @@ namespace SntValentineScreensaver
             switch (_currentState)
             {
                 case ImageName.Start:
-                    pictureName = "HeartOpacityMask";
-                    //_currentState = ImageName.First;
+                    pictureName = "red_heart";
+                    _currentState = ImageName.First;
                     break;
                 case ImageName.First:
-                    pictureName = "HeartOpacityMask";
-                    _currentState = ImageName.Second;
+                    pictureName = "couple";
+                    //_currentState = ImageName.Second;
                     break;
                 case ImageName.Second:
                     pictureName = "HeartOpacityMask";
@@ -188,19 +188,28 @@ namespace SntValentineScreensaver
             {
                 foreach (var heartCell in row)
                 {
+                    var img = (Image)heartCell.ViewPort.Visual;
+
                     var flipOutStoryboard = new Storyboard();
-                    {
-                    };
                     Storyboard.SetTarget(flipOutAnimation, heartCell.ViewPort);
-                    Storyboard.SetTarget(flipInAnimation, heartCell.ViewPort);
                     Storyboard.SetTargetProperty(flipOutAnimation, new PropertyPath("(Viewport2DVisual3D.Transform).(RotateTransform3D.Rotation)"));
-                    Storyboard.SetTargetProperty(flipInAnimation, new PropertyPath("(Viewport2DVisual3D.Transform).(RotateTransform3D.Rotation)"));
+
+                    //var keyFramesAnimation = new ObjectAnimationUsingKeyFrames();
+                    //var firstFrame = new DiscreteObjectKeyFrame() {KeyTime = KeyTime.FromTimeSpan(TimeSpan.Zero), Value = pic};
+                    //keyFramesAnimation.BeginTime = TimeSpan.FromSeconds(1);
+                    //keyFramesAnimation.KeyFrames.Add(firstFrame);
+                    //Storyboard.SetTarget(keyFramesAnimation, img);
+                    //Storyboard.SetTargetProperty(keyFramesAnimation, new PropertyPath("Source"));
+
                     flipOutStoryboard.Children.Add(flipOutAnimation);
-                    flipOutStoryboard.Children.Add(flipInAnimation);
-                    var img=(Image)heartCell.ViewPort.Visual;
-                    flipOutAnimation.Completed += (s, e) =>
+                    flipOutStoryboard.Completed += (s, e) =>
                     {
-                        //img.Source = pic;
+                        img.Source = pic;
+                        Storyboard.SetTarget(flipInAnimation, heartCell.ViewPort);
+                        Storyboard.SetTargetProperty(flipInAnimation, new PropertyPath("(Viewport2DVisual3D.Transform).(RotateTransform3D.Rotation)"));
+                        var flipInStoryboard = new Storyboard();
+                        flipInStoryboard.Children.Add(flipInAnimation);
+                        img.BeginStoryboard(flipInStoryboard);
                     };
                     img.BeginStoryboard(flipOutStoryboard);
 
@@ -215,16 +224,16 @@ namespace SntValentineScreensaver
         {
             Rotation3D fromValue = new AxisAngleRotation3D(new Vector3D(0, 1, 0), 90);
             Rotation3D toValue = new AxisAngleRotation3D(new Vector3D(0, 1, 0), 0);
-            var t = new Rotation3DAnimation(null, toValue, new Duration(TimeSpan.FromSeconds(1)), FillBehavior.HoldEnd);
+            var t = new Rotation3DAnimation(null, toValue, new Duration(TimeSpan.FromSeconds(1)), FillBehavior.Stop);
+            t.BeginTime = TimeSpan.FromSeconds(1);
             return t;
         }
 
         private Rotation3DAnimation FlipOutAnimation()
         {
             Rotation3D fromValue = new AxisAngleRotation3D(new Vector3D(0, 1, 0), 0);
-            Rotation3D toValue = new AxisAngleRotation3D(new Vector3D(0, 1, 0), 90);
+            Rotation3D toValue = new AxisAngleRotation3D(new Vector3D(0, 1, 0), 100);
             var t = new Rotation3DAnimation(null, toValue, new Duration(TimeSpan.FromSeconds(1)), FillBehavior.HoldEnd);
-            //t.BeginTime = TimeSpan.FromSeconds(1);
             return t;
         }
 

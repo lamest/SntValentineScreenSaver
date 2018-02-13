@@ -109,5 +109,11 @@
   <ItemGroup>
     <Resource Include="Images\HeartOpacityMask.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\red_heart.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\couple.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
