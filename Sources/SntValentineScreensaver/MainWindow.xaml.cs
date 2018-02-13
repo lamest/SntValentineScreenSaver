@@ -18,6 +18,7 @@ using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Application = System.Windows.Application;
+using Button = System.Windows.Controls.Button;
 using Cursors = System.Windows.Input.Cursors;
 using ImageBrush = System.Windows.Media.ImageBrush;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
@@ -71,15 +72,12 @@ namespace SntValentineScreensaver
                     var vp2d3d = CreateViewPort();
                     vp3d.Children.Add(vp2d3d);
 
-                    var image = new Image();
-                    //animationTrigger.EnterActions.Add();
-                    //image.Triggers.Add();
-                    image.Source = OpacityMaskImage;
-                    image.SetValue(Grid.ColumnProperty, i);
-                    image.SetValue(Grid.RowProperty, j);
-                    TheGrid.Children.Add(image);
+                    vp3d.SetValue(Grid.ColumnProperty, i);
+                    vp3d.SetValue(Grid.RowProperty, j);
 
-                    var cell = new HeartCell() { Image = image };
+                    TheGrid.Children.Add(vp3d);
+
+                    var cell = new HeartCell() {ViewPort = vp2d3d,};
                     ImagesArray[i].Add(cell);
                 }
             }
@@ -102,10 +100,36 @@ namespace SntValentineScreensaver
             //tt.BeginAnimation(TranslateTransform.XProperty, animation);
         }
 
-        private static Viewport2DVisual3D CreateViewPort()
+        private Viewport2DVisual3D CreateViewPort()
         {
-            var vp= new Viewport2DVisual3D();
+            var vp = new Viewport2DVisual3D();
             var geometry = new MeshGeometry3D();
+            geometry.Positions = new Point3DCollection()
+            {
+                new Point3D(-1, 1, 0),
+                new Point3D(-1, -1, 0),
+                new Point3D(1, -1, 0),
+                new Point3D(1, 1, 0),
+            };
+            geometry.TextureCoordinates = new PointCollection()
+            {
+                new Point(0, 0),
+                new Point(0, 1),
+                new Point(1, 1),
+                new Point(1, 0),
+            };
+            geometry.TriangleIndices = new Int32Collection() {0, 1, 2, 0, 2, 3};
+            vp.Geometry = geometry;
+
+            var material = new DiffuseMaterial(new SolidColorBrush(Color.FromArgb(0xff, 0xff, 0xff, 0xff)));
+            //material.SetValue(Viewport2DVisual3D.IsVisualHostMaterial, true);
+            vp.Material = material;
+
+            vp.Transform = new RotateTransform3D(new AxisAngleRotation3D(new Vector3D(0, 1, 0), 0));
+
+            var image = new Image {Source = OpacityMaskImage};
+            vp.Visual = new Button { Content = "Testing", Background = Brushes.Aqua };
+
             return vp;
         }
 
@@ -224,6 +248,7 @@ namespace SntValentineScreensaver
         }
 
         public int AnimationDelay { get; set; }
+        public Viewport2DVisual3D ViewPort { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
