@@ -9,13 +9,18 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.Media3D;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Application = System.Windows.Application;
+using Cursors = System.Windows.Input.Cursors;
 using ImageBrush = System.Windows.Media.ImageBrush;
+using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 
 namespace SntValentineScreensaver
 {
@@ -24,6 +29,9 @@ namespace SntValentineScreensaver
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Timer _animationGlobalTimer;
+        private ImageName _currentState = ImageName.Start;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -44,8 +52,8 @@ namespace SntValentineScreensaver
             OpacityMaskImage = new BitmapImage(new Uri(@"pack://application:,,,/SntValentineScreensaver;component/Images/HeartOpacityMask.png", UriKind.Absolute));
             OpacityBrush = new ImageBrush(OpacityMaskImage);
 
-            InitImageArray();
-            LoadImages(ImageName.Start);
+            //InitImageArray();
+            //LoadImages(ImageName.Start);
 
             var columnCount = TheGrid.ColumnDefinitions.Count;
             var rowCount = TheGrid.RowDefinitions.Count;
@@ -54,17 +62,34 @@ namespace SntValentineScreensaver
                 ImagesArray.Add(new List<HeartCell>(rowCount));
                 for (var j = 0; j < rowCount; j++)
                 {
+                    var vp3d = new Viewport3D();
+                    var camera = CreateCamera();
+                    vp3d.Camera = camera;
+
+                    var light = CreateLight();
+                    vp3d.Children.Add(light);
+                    var vp2d3d = CreateViewPort();
+                    vp3d.Children.Add(vp2d3d);
+
                     var image = new Image();
+                    //animationTrigger.EnterActions.Add();
+                    //image.Triggers.Add();
                     image.Source = OpacityMaskImage;
                     image.SetValue(Grid.ColumnProperty, i);
                     image.SetValue(Grid.RowProperty, j);
                     TheGrid.Children.Add(image);
 
-                    var cell = new HeartCell(){Image = image};
+                    var cell = new HeartCell() { Image = image };
                     ImagesArray[i].Add(cell);
                 }
             }
 
+            _animationGlobalTimer = new Timer();
+
+            _animationGlobalTimer.Interval = 2000;
+            _animationGlobalTimer.Enabled = true;
+            _animationGlobalTimer.Start();
+            _animationGlobalTimer.Tick += OnGlobalTimerTick;
             //TransformGroup group = new TransformGroup();
             //double width = this.MainGrid.RenderSize.Width;
             //DoubleAnimation animation = new DoubleAnimation((width / 2) * -1, width / 2 + logo.ActualWidth, new Duration(new TimeSpan(0, 0, 0, 10)));
@@ -77,43 +102,89 @@ namespace SntValentineScreensaver
             //tt.BeginAnimation(TranslateTransform.XProperty, animation);
         }
 
-        private void InitImageArray()
+        private static Viewport2DVisual3D CreateViewPort()
         {
-            for (var i = 0; i < 10; i++)
-            {
-                var imageRow = new List<HeartCell>();
-                for (var j = 0; j < 10; j++)
-                {
-                    imageRow.Add(new HeartCell());
-                }
-
-                ImagesArray.Add(imageRow);
-            }
+            var vp= new Viewport2DVisual3D();
+            var geometry = new MeshGeometry3D();
+            return vp;
         }
 
-        private void LoadImages(ImageName imageName)
+        private static PerspectiveCamera CreateCamera()
         {
-            foreach (var imageRow in ImagesArray)
-            {
-                foreach (var cell in imageRow)
-                {
-                    var imageUrl = GetImageUrl(imageName);
-                    cell.Image.BeginInit();
-                    //cell.Image.UriSource = imageUrl;
-                    cell.Image.EndInit();
-                }
-            }
+            var camera = new PerspectiveCamera();
+            camera.Position = new Point3D(0, 0, 4);
+            return camera;
         }
 
-        private Uri GetImageUrl(ImageName imageName)
+        private static ModelVisual3D CreateLight()
         {
-            switch (imageName)
+            var light = new ModelVisual3D();
+            var lightColor = Color.FromArgb(0xff, 0xff, 0xff, 0xff);
+            light.Content = new DirectionalLight(lightColor, new Vector3D(0, 0, -1));
+            return light;
+        }
+
+        private void OnGlobalTimerTick(object sender, EventArgs e)
+        {
+            string pictureName=String.Empty;
+            switch (_currentState)
             {
                 case ImageName.Start:
-                    return null;
+                    pictureName = "HeartOpacityMask";
+                    _currentState = ImageName.First;
+                    break;
+                case ImageName.First:
+                    pictureName = "HeartOpacityMask";
+                    _currentState = ImageName.Second;
+                    break;
+                case ImageName.Second:
+                    pictureName = "HeartOpacityMask";
+                    _currentState = ImageName.Third;
+                    break;
+                case ImageName.Third:
+                    pictureName = "HeartOpacityMask";
+                    _currentState = ImageName.Start;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            var pic = new BitmapImage(new Uri($"pack://application:,,,/SntValentineScreensaver;component/Images/{pictureName}.png", UriKind.Absolute));
+
+            ChangePicture(pic);
+        }
+
+        private void ChangePicture(BitmapImage pic)
+        {
+            var flipOutAnimation = FlipOutAnimation();
+            var flipInAnimation = FlipInAnimation();
+            flipOutAnimation.Completed += (s, e) =>
+            {
+            };
+
+            foreach (var row in ImagesArray)
+            {
+                foreach (var heartCell in row)
+                {
+                    //heartCell.Image.BeginAnimation(flipInAnimation);
+                }
             }
 
-            return null;
+        }
+
+        private Rotation3DAnimation FlipInAnimation()
+        {
+            Rotation3D fromValue = new AxisAngleRotation3D(new Vector3D(1, 1, 0), 90);
+            Rotation3D toValue = new AxisAngleRotation3D(new Vector3D(1, 1, 0), 0);
+            var t = new Rotation3DAnimation(fromValue, toValue, new Duration(TimeSpan.FromSeconds(1)));
+            return t;
+        }
+
+        private Rotation3DAnimation FlipOutAnimation()
+        {
+            Rotation3D fromValue = new AxisAngleRotation3D(new Vector3D(1, 1, 0), 0);
+            Rotation3D toValue = new AxisAngleRotation3D(new Vector3D(1, 1, 0), 90);
+            var t = new Rotation3DAnimation(fromValue, toValue, new Duration(TimeSpan.FromSeconds(1)));
+            return t;
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)

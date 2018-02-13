@@ -33,7 +33,7 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>-->
-        <Grid x:Name="TheGrid">
+        <Grid x:Name="TheGrid" Grid.Row="1" Grid.Column="1" OpacityMask="{Binding OpacityBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
@@ -57,34 +57,15 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-
+            <Grid.Effect>
+                <DropShadowEffect BlurRadius="15"/>
+            </Grid.Effect>
         </Grid>
-        <ItemsControl Grid.Column="1" Grid.Row="1" 
-                      ItemsSource="{Binding ImagesArray}"
-                      OpacityMask="{Binding OpacityBrush}"
-                      >
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <Grid Background="AliceBlue"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <ItemsControl ItemsSource="{Binding}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <Grid Background="DarkBlue" IsItemsHost="True"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Image Source="{Binding}" Width="100" Height="100"/>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
     </Grid>
 </Window>

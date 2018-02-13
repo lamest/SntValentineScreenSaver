@@ -1,0 +1,41 @@
+﻿<EventTrigger xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                                     RoutedEvent="Image.Loaded">
+    <BeginStoryboard>
+        <Storyboard RepeatBehavior="Forever">
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Source"
+                                           Duration="0:0:2">
+                <DiscreteObjectKeyFrame KeyTime="0:0:0">
+                    <DiscreteObjectKeyFrame.Value>
+                        <BitmapImage UriSource="C:\Users\Public\Pictures\Sample Pictures\Koala.jpg"/>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+                <DiscreteObjectKeyFrame KeyTime="0:0:1">
+                    <DiscreteObjectKeyFrame.Value>
+                        <BitmapImage UriSource="C:\Users\Public\Pictures\Sample Pictures\Penguins.jpg"/>
+                    </DiscreteObjectKeyFrame.Value>
+                </DiscreteObjectKeyFrame>
+            </ObjectAnimationUsingKeyFrames>
+        </Storyboard>
+    </BeginStoryboard>
+</EventTrigger>
+
+<!--<BeginStoryboard>
+    <Storyboard>
+
+        --><!-- This animation animates the Rotation property of the RotateTransform
+                       causing the 3D shape to rotate and wobble as the rotation angle and 
+                       axis are animated. --><!--
+        <Rotation3DAnimation
+            Storyboard.TargetName="myRotateTransform3D" 
+            Storyboard.TargetProperty="Rotation" 
+            AutoReverse="True"  RepeatBehavior="Forever">
+            <Rotation3DAnimation.From>
+                <AxisAngleRotation3D Axis="0,3,0" Angle="-60" />
+            </Rotation3DAnimation.From>
+            <Rotation3DAnimation.To>
+                <AxisAngleRotation3D Axis="1,0,1" Angle="60" />
+            </Rotation3DAnimation.To>
+        </Rotation3DAnimation>
+
+    </Storyboard>
+</BeginStoryboard>-->
