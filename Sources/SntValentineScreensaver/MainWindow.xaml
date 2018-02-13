@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:SntValentineScreensaver"
         mc:Ignorable="d"
         Title="MainWindow"
-        Background="#a23a61"
+        Background="{Binding BGColor}"
         KeyDown="Window_KeyDown"
         MouseDown="Window_MouseDown"
         ResizeMode="NoResize"
@@ -23,20 +23,68 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width=".2*"/>
         </Grid.ColumnDefinitions>
-        <ItemsControl Grid.Column="1" Grid.Row="1" d:DataContext="{d:DesignData Source=./DesignData/Test1.xaml}" ItemsSource="{Binding}">
+        <!--<ListBox SelectedIndex="0" x:Name="lbCustomers" Grid.Row="1" Margin="6" ItemsSource="{Binding}"  d:DataContext="{d:DesignData Source=./DesignData/Test1.xaml}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Background="Blue"  Text="{Binding Path=FirstName}" Margin="0,0,4,0" Width="10"/>
+                        <TextBlock Text="{Binding Path=LastName}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>-->
+        <Grid x:Name="TheGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+        </Grid>
+        <ItemsControl Grid.Column="1" Grid.Row="1" 
+                      ItemsSource="{Binding ImagesArray}"
+                      OpacityMask="{Binding OpacityBrush}"
+                      >
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <Grid Background="Black">
-
-                    </Grid>
+                    <Grid Background="AliceBlue"/>
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Border Background="AliceBlue"></Border>
+                    <ItemsControl ItemsSource="{Binding}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Grid Background="DarkBlue" IsItemsHost="True"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding}" Width="100" Height="100"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-
     </Grid>
 </Window>

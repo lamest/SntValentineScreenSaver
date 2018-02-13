@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using System.Drawing;
+using System.Windows.Documents;
 
 namespace SntValentineScreensaver.DesignData
 {
-    public class TestData:List<Image>
+    public class Customer:List<Customer>
     {
     }
 }

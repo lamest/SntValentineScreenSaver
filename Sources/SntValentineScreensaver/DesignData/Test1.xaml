@@ -1,8 +1,16 @@
-﻿<designData:TestData xmlns:designData="clr-namespace:SntValentineScreensaver.DesignData"
-                     xmlns:drawing="clr-namespace:System.Drawing;assembly=System.Drawing">
-    <drawing:Image />
-    <drawing:Image />
-    <drawing:Image />
-    <drawing:Image />
-
-</designData:TestData>
+﻿<m:CustomersRoot xmlns:m="clr-namespace:SntValentineScreensaver.DesignData">
+    <m:Customers>
+        <m:Customer />
+        <m:Customer />
+        <m:Customer />
+        <m:Customer />
+        <m:Customer />
+    </m:Customers>
+    <m:Customers>
+        <m:Customer />
+        <m:Customer />
+        <m:Customer />
+        <m:Customer />
+        <m:Customer />
+    </m:Customers>
+</m:CustomersRoot>
