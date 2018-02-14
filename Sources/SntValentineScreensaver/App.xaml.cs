@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace SntValentineScreensaver
     public partial class App : Application
     {
         private HwndSource winWPFContent;
+        private static Stopwatch _currentStopwatch;
 
         private void ApplicationStartup(object sender, StartupEventArgs e)
         {
@@ -41,6 +43,9 @@ namespace SntValentineScreensaver
                     window.Width = s.WorkingArea.Width;
                     window.Height = s.WorkingArea.Height;
                     window.Show();
+
+                    _currentStopwatch = new Stopwatch();
+                    _currentStopwatch.Start();
                 }
             }
             else if (e.Args[0].ToLower().StartsWith("/p"))
@@ -67,6 +72,14 @@ namespace SntValentineScreensaver
             }
             else if (e.Args[0].ToLower().StartsWith("/c"))
             {
+            }
+        }
+
+        public static void ShutdownIfTimeout()
+        {
+            if (_currentStopwatch.Elapsed > TimeSpan.FromSeconds(10))
+            {
+                Application.Current.Shutdown();
             }
         }
     }

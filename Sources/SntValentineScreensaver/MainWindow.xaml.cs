@@ -163,13 +163,10 @@ namespace SntValentineScreensaver
                     pictureName = "rose_PNG650";
                     break;
                 case 3:
-                    pictureName = "rose_PNG641";
+                    pictureName = "rose_PNG642";
                     break;
                 case 4:
                     pictureName = "couple";
-                    break;
-                case 5:
-                    pictureName = "rose_PNG642";
                     _currentState = 0;
                     break;
                 default:
@@ -207,6 +204,8 @@ namespace SntValentineScreensaver
                     flipOutStoryboard.Children.Add(flipOutAnimation);
                     flipOutStoryboard.Completed += (s, e) =>
                     {
+                        var tr = (RotateTransform3D) heartCell.ViewPort.Transform;
+                        tr.Rotation = new AxisAngleRotation3D(new Vector3D(0, 1, 0), 90);
                         img.Source = pic;
                         Storyboard.SetTarget(flipInAnimation, heartCell.ViewPort);
                         Storyboard.SetTargetProperty(flipInAnimation, new PropertyPath("(Viewport2DVisual3D.Transform).(RotateTransform3D.Rotation)"));
@@ -226,7 +225,7 @@ namespace SntValentineScreensaver
         {
             Rotation3D fromValue = new AxisAngleRotation3D(new Vector3D(0, 1, 0), 90);
             Rotation3D toValue = new AxisAngleRotation3D(new Vector3D(0, 1, 0), 0);
-            var t = new Rotation3DAnimation(null, toValue, new Duration(TimeSpan.FromSeconds(1)), FillBehavior.Stop);
+            var t = new Rotation3DAnimation(null, toValue, new Duration(TimeSpan.FromSeconds(1)), FillBehavior.HoldEnd);
             t.BeginTime = TimeSpan.FromSeconds(1);
             return t;
         }
@@ -234,7 +233,7 @@ namespace SntValentineScreensaver
         private Rotation3DAnimation FlipOutAnimation()
         {
             Rotation3D fromValue = new AxisAngleRotation3D(new Vector3D(0, 1, 0), 0);
-            Rotation3D toValue = new AxisAngleRotation3D(new Vector3D(0, 1, 0), 100);
+            Rotation3D toValue = new AxisAngleRotation3D(new Vector3D(0, 1, 0), 90);
             var t = new Rotation3DAnimation(null, toValue, new Duration(TimeSpan.FromSeconds(1)), FillBehavior.HoldEnd);
             return t;
         }
@@ -246,7 +245,7 @@ namespace SntValentineScreensaver
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            Application.Current.Shutdown();
+            App.ShutdownIfTimeout();
         }
     }
 
@@ -261,7 +260,7 @@ namespace SntValentineScreensaver
             set
             {
                 _image = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(Image));
             }
         }
 
@@ -271,7 +270,7 @@ namespace SntValentineScreensaver
             set
             {
                 _backgroundColor = value;
-                OnPropertyChanged();
+                OnPropertyChanged(nameof(BackgroundColor));
             }
         }
 
@@ -281,7 +280,7 @@ namespace SntValentineScreensaver
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged(string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

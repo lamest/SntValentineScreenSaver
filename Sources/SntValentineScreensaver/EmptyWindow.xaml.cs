@@ -27,7 +27,7 @@ namespace SntValentineScreensaver
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            Application.Current.Shutdown();
+            App.ShutdownIfTimeout();
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
